@@ -71,66 +71,71 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-6 text-indigo-800 border-b pb-2 border-indigo-200">Search Transactions</h2>
+    <div className="page-container">
+      <section className="page-header">
+        <h1 className="page-title">Household Transaction Search</h1>
+        <p className="page-subtitle">
+          Search household-level purchases joined with demographic, transaction, and product information.
+        </p>
+      </section>
       
-      <form onSubmit={handleSearch} className="mb-8 flex items-center space-x-4 bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+      <form onSubmit={handleSearch} className="cyber-panel mb-8 flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">
         <input
           type="number"
           value={hshdNum}
           onChange={(e) => setHshdNum(e.target.value)}
           placeholder="Enter Household Number"
           required
-          className="block w-full max-w-xs px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm"
+          className="cyber-input block w-full max-w-xs placeholder-slate-500 sm:text-sm"
         />
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex justify-center py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out"
+          className="cyber-button justify-center px-5 py-2.5"
         >
           {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
 
       {error && (
-        <p className="text-sm text-red-600 mb-4">Error: {error}</p>
+        <p className="mb-4 rounded-xl border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-200">Error: {error}</p>
       )}
 
       {loading && (
-        <p className="text-sm text-gray-600">Loading results...</p>
+        <p className="cyber-panel rounded-xl p-4 text-sm text-slate-300">Loading results...</p>
       )}
 
       {!loading && searched && results.length === 0 && !error && (
-         <p className="text-sm text-gray-600">No transactions found for this household number.</p>
+         <p className="cyber-panel rounded-xl p-4 text-sm text-slate-300">No transactions found for this household number.</p>
       )}
 
       {!loading && results.length > 0 && (
-        <div className="overflow-hidden shadow-md ring-1 ring-black ring-opacity-5 rounded-lg">
+        <div className="cyber-table table-card">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-cyan-300/10">
+              <thead className="bg-cyan-950/50">
                 <tr>
-                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Hshd Num</th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Basket Num</th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Product Num</th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Department</th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Commodity</th>
-                  <th scope="col" className="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Spend</th>
-                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right text-sm font-semibold text-gray-900">Units</th>
+                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100 sm:pl-6">Hshd Num</th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Basket Num</th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Date</th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Product Num</th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Department</th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Commodity</th>
+                  <th scope="col" className="px-3 py-3.5 text-right text-xs font-bold uppercase tracking-wide text-cyan-100">Spend</th>
+                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 text-right text-xs font-bold uppercase tracking-wide text-cyan-100">Units</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-cyan-300/10 bg-slate-950/45">
                 {results.map((item, index) => (
-                  <tr key={`${item.Basket_num}-${item.Product_num}-${index}`}> {/* Composite key */} 
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{item.Hshd_num}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.Basket_num}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.Date}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.Product_num}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.Department}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.Commodity}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right">{item.Spend.toFixed(2)}</td>
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">{item.Units}</td>
+                  <tr key={`${item.Basket_num}-${item.Product_num}-${index}`} className="odd:bg-white/[0.025] hover:bg-cyan-400/10"> {/* Composite key */} 
+                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-slate-100 sm:pl-6">{item.Hshd_num}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{item.Basket_num}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{item.Date}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{item.Product_num}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{item.Department}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{item.Commodity}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-200 text-right">{item.Spend.toFixed(2)}</td>
+                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-semibold text-slate-100 sm:pr-6">{item.Units}</td>
                   </tr>
                 ))}
               </tbody>

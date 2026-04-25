@@ -7,6 +7,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartPalette, chartTheme, tooltipStyle } from './chartTheme';
 
 interface SimplePieChartProps {
   data: unknown[];
@@ -14,12 +15,9 @@ interface SimplePieChartProps {
   dataKey: string;
 }
 
-// Define some colors for the pie slices
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
-
 const SimplePieChart: React.FC<SimplePieChartProps> = ({ data, nameKey, dataKey }) => {
     if (!Array.isArray(data) || data.length === 0) {
-        return <p className="text-sm text-gray-500">No data available for chart.</p>;
+        return <p className="text-sm text-slate-400">No data available for chart.</p>;
       }
 
   return (
@@ -31,17 +29,17 @@ const SimplePieChart: React.FC<SimplePieChartProps> = ({ data, nameKey, dataKey 
           cy="50%"
           labelLine={false}
         //   label={renderCustomizedLabel} // Optional: Add custom labels
-          outerRadius={80}
-          fill="#8884d8"
+          outerRadius={84}
+          fill={chartTheme.cyan}
           dataKey={dataKey}
           nameKey={nameKey} // Tooltip will use this
         >
           {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell key={`cell-${index}`} fill={chartPalette[index % chartPalette.length]} stroke="#0f172a" strokeWidth={2} />
           ))}
         </Pie>
-        <Tooltip formatter={(value: number) => value.toFixed(2)} />
-        <Legend />
+        <Tooltip formatter={(value: number) => value.toFixed(2)} contentStyle={tooltipStyle} />
+        <Legend wrapperStyle={{ paddingTop: 12, color: chartTheme.axis }} />
       </PieChart>
     </ResponsiveContainer>
   );

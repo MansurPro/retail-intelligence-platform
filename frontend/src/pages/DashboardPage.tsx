@@ -21,6 +21,7 @@ import SimplePieChart from '../components/charts/SimplePieChart';
 import FrequentPairsTable from '../components/charts/FrequentPairsTable';
 import LoyaltyTrendsChart from '../components/charts/LoyaltyTrendsChart';
 import AssociationRulesTable from '../components/charts/AssociationRulesTable';
+import { chartTheme } from '../components/charts/chartTheme';
 // Import react-select
 import Select from 'react-select';
 
@@ -78,16 +79,16 @@ function useFetchDashboardData<T>(endpoint: string): FetchState<T> {
 const ChartWrapper: React.FC<{ title: string; fetchState: FetchState<unknown>; children: React.ReactNode }> = ({ title, fetchState, children }) => {
   const { loading, error } = fetchState;
   return (
-    <div className="mb-6 p-5 border rounded-lg bg-gradient-to-br from-white to-gray-50 shadow-md min-h-[200px]">
-      <h3 className="text-lg font-semibold mb-3 text-gray-700">{title}</h3>
+    <div className="chart-card cyber-panel-hover min-h-[200px]">
+      <h3 className="section-title text-[20px]">{title}</h3>
       {loading && (
         <div className="flex items-center justify-center h-40">
-          <p className="text-sm text-gray-500">Loading...</p>
+          <p className="text-sm text-slate-400">Loading...</p>
         </div>
       )}
       {error && (
         <div className="flex items-center justify-center h-40 p-4">
-          <p className="text-sm text-red-600 text-center">Error: {error}</p>
+          <p className="text-sm text-red-300 text-center">Error: {error}</p>
         </div>
       )}
       {!loading && !error && children}
@@ -250,16 +251,21 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold mb-8 text-indigo-800 border-b pb-3 border-indigo-200">Analytics Dashboard</h2>
+    <div className="page-container">
+      <section className="page-header">
+        <h1 className="page-title">Retail Insights Dashboard</h1>
+        <p className="page-subtitle">
+          Explore engagement, loyalty, basket patterns, product preferences, and churn indicators.
+        </p>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="dashboard-grid grid-cols-1 md:grid-cols-2">
         <ChartWrapper title="Top 10 Spenders" fetchState={topSpenders}>
           <SimpleBarChart 
             data={topSpenders.data || []} 
             xAxisKey="Hshd_num" 
             barDataKey="total_spend" 
-            fillColor="#8884d8"
+            fillColor={chartTheme.cyan}
           />
         </ChartWrapper>
 
@@ -272,7 +278,7 @@ const DashboardPage: React.FC = () => {
             data={engagementByIncome.data || []} 
             xAxisKey="income_bracket" 
             barDataKey="avg_spend" 
-            fillColor="#82ca9d"
+            fillColor={chartTheme.green}
           />
         </ChartWrapper>
 
@@ -293,7 +299,7 @@ const DashboardPage: React.FC = () => {
             data={popularProducts.data || []} 
             xAxisKey="commodity" 
             barDataKey="total_spend" 
-            fillColor="#ffc658"
+            fillColor={chartTheme.amber}
           />
         </ChartWrapper>
 
@@ -302,7 +308,7 @@ const DashboardPage: React.FC = () => {
             data={formatSeasonalData(seasonalTrends.data)} 
             xAxisKey="monthLabel" 
             lineDataKey="total_spend" 
-            strokeColor="#ff7300"
+            strokeColor={chartTheme.purple}
           />
         </ChartWrapper>
 
@@ -312,8 +318,8 @@ const DashboardPage: React.FC = () => {
         </ChartWrapper>
 
         {/* --- ML PREDICTION CARD --- */}
-        <div className="mb-6 p-5 border rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-md col-span-1 md:col-span-2">
-          <h3 className="text-lg font-semibold mb-3 text-indigo-400">Predict Customer Lifetime Value (CLV)</h3>
+        <div className="dashboard-card cyber-panel-hover col-span-1 md:col-span-2">
+          <h3 className="section-title text-[20px]">Predict Customer Lifetime Value (CLV)</h3>
 
           <form className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4" onSubmit={handlePredictCLV}>
             <input 
@@ -321,7 +327,7 @@ const DashboardPage: React.FC = () => {
               placeholder="Income Range (e.g. 50-75k)"
               value={incomeRange}
               onChange={(e) => setIncomeRange(e.target.value)}
-              className="p-2 rounded-md bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500"
+              className="cyber-input"
               required
             />
             <input 
@@ -329,7 +335,7 @@ const DashboardPage: React.FC = () => {
               placeholder="Household Size (e.g. 4)"
               value={hhSize}
               onChange={(e) => setHhSize(e.target.value)}
-              className="p-2 rounded-md bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500"
+              className="cyber-input"
               required
             />
             <input 
@@ -337,36 +343,36 @@ const DashboardPage: React.FC = () => {
               placeholder="Children Count"
               value={children}
               onChange={(e) => setChildren(e.target.value)}
-              className="p-2 rounded-md bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500"
+              className="cyber-input"
               required
             />
             <button
               type="submit"
               disabled={predictLoading}
-              className="col-span-1 md:col-span-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-md shadow-md disabled:opacity-50 mt-2"
+              className="cyber-button col-span-1 mt-2 py-2 md:col-span-3"
             >
               {predictLoading ? 'Predicting...' : 'Predict CLV'}
             </button>
           </form>
 
           {predictError && (
-            <p className="text-red-500 text-sm">{predictError}</p>
+            <p className="rounded-xl border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-200">{predictError}</p>
           )}
 
           {predictedCLV !== null && (
-            <p className="text-green-400 font-semibold text-lg">
+            <p className="text-green-300 font-semibold text-lg">
               Predicted CLV: <span className="underline">${predictedCLV}</span>
             </p>
           )}
         </div>
 
         {/* --- NEW: Basket Item Prediction Card --- */}
-        <div className="mb-6 p-5 border rounded-lg bg-gradient-to-br from-blue-50 to-indigo-100 shadow-md col-span-1 md:col-span-2">
-            <h3 className="text-lg font-semibold mb-3 text-indigo-700">Predict Next Item (Cross-Sell Opportunity)</h3>
-            <p className="text-sm text-gray-600 mb-4">Select commodities currently in the basket to predict the probability of adding DAIRY.</p>
+        <div className="dashboard-card cyber-panel-hover col-span-1 md:col-span-2">
+            <h3 className="section-title text-[20px]">Predict Next Item (Cross-Sell Opportunity)</h3>
+            <p className="card-description mb-4">Select commodities currently in the basket to predict the probability of adding DAIRY.</p>
 
             <form onSubmit={handlePredictBasket}>
-                <label htmlFor="commodity-select" className="block text-sm font-medium text-gray-700 mb-1">Select Items in Basket:</label>
+                <label htmlFor="commodity-select" className="block text-sm font-semibold text-slate-200 mb-1">Select Items in Basket:</label>
                 <Select
                     id="commodity-select"
                     isMulti
@@ -376,60 +382,76 @@ const DashboardPage: React.FC = () => {
                     isLoading={featuresLoading}
                     placeholder={featuresLoading ? "Loading commodities..." : "Select commodities..."}
                     className="mb-4"
-                    styles={{ // Optional: Basic styling for better visibility
-                        control: (provided) => ({ ...provided, borderColor: '#a5b4fc' }),
+                    styles={{
+                        control: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: 'rgba(15, 23, 42, 0.82)',
+                            borderColor: state.isFocused ? '#67e8f9' : 'rgba(103, 232, 249, 0.28)',
+                            borderRadius: 12,
+                            boxShadow: state.isFocused ? '0 0 0 3px rgba(34, 211, 238, 0.18)' : 'none',
+                            color: '#e5eef8',
+                        }),
+                        menu: (provided) => ({ ...provided, backgroundColor: '#0f172a', border: '1px solid rgba(103, 232, 249, 0.2)' }),
                         option: (provided, state) => ({
                             ...provided,
-                            color: state.isFocused ? 'white' : '#333', // Darker text, white on hover/focus
-                            backgroundColor: state.isFocused ? '#6366f1' : provided.backgroundColor, // Indigo background on hover/focus
+                            color: state.isFocused ? '#ffffff' : '#dbeafe',
+                            backgroundColor: state.isFocused ? 'rgba(79, 70, 229, 0.72)' : 'transparent',
                         }),
+                        input: (provided) => ({ ...provided, color: '#e5eef8' }),
+                        placeholder: (provided) => ({ ...provided, color: '#94a3b8' }),
+                        singleValue: (provided) => ({ ...provided, color: '#e5eef8' }),
+                        multiValue: (provided) => ({ ...provided, backgroundColor: 'rgba(34, 211, 238, 0.16)', borderRadius: 8 }),
+                        multiValueLabel: (provided) => ({ ...provided, color: '#cffafe', fontWeight: 600 }),
                     }}
                 />
                 
                 <button
                     type="submit"
                     disabled={basketPredictLoading || featuresLoading || availableFeatures.length === 0}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="cyber-button w-full py-2"
                 >
                     {basketPredictLoading ? 'Predicting...' : 'Predict Probability of Adding DAIRY'}
                 </button>
             </form>
 
             {basketPredictError && (
-                <p className="text-red-500 text-sm mt-3">Error: {basketPredictError}</p>
+                <p className="mt-3 rounded-xl border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-200">Error: {basketPredictError}</p>
             )}
 
             {basketPredictResult && (
-                <div className="mt-4 p-3 bg-green-100 border border-green-300 rounded-md">
-                    <p className="text-green-800 font-semibold">
+                <div className="mt-4 p-3 bg-emerald-400/10 border border-emerald-300/25 rounded-xl">
+                    <p className="text-green-200 font-semibold">
                         Predicted Probability of adding {basketPredictResult.target_item}:
                         <span className="text-xl font-bold ml-2">{basketPredictResult.probability}%</span>
                     </p>
-                     <p className="text-xs text-green-700 mt-1">Based on items: {selectedCommodities.map(o => o.label).join(', ') || '(None)'}</p>
+                     <p className="text-xs text-green-300/90 mt-1">Based on items: {selectedCommodities.map(o => o.label).join(', ') || '(None)'}</p>
                 </div>
             )}
              {availableFeatures.length === 0 && !featuresLoading && !basketPredictError && (
-                 <p className="text-gray-500 text-sm mt-3">Commodity list for prediction is unavailable. Model might not be loaded correctly.</p>
+                 <p className="text-slate-400 text-sm mt-3">Commodity list for prediction is unavailable. Model might not be loaded correctly.</p>
             )}
         </div>
 
       </div>
 
       {/* --- Churn Risk Section --- */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6 text-red-700 border-b pb-3 border-red-200">Customer Churn Risk (Inactive &gt; 8 Weeks)</h2>
+      <section className="dashboard-section">
+        <div className="page-header">
+          <h2 className="section-title text-pink-300">Customer Churn Risk (Inactive &gt; 8 Weeks)</h2>
+          <p className="page-subtitle text-base">Review households with inactivity signals and summarize at-risk segments.</p>
+        </div>
         
         {/* --- Churn Summary Charts --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="dashboard-grid grid-cols-1 md:grid-cols-2 mb-8">
           <ChartWrapper title="At-Risk Count by Loyalty Status" fetchState={churnRisk}>
             {churnRisk.data?.summary_stats?.count_by_loyalty ? (
                <SimpleBarChart 
                  data={churnRisk.data.summary_stats.count_by_loyalty}
                  xAxisKey="loyalty_flag" 
                  barDataKey="count" 
-                 fillColor="#ef4444" // Red color for risk
+                 fillColor={chartTheme.pink} // Risk accent
                />
-             ) : <p className="text-sm text-gray-500">Summary data unavailable.</p>}
+             ) : <p className="text-sm text-slate-400">Summary data unavailable.</p>}
           </ChartWrapper>
           
           <ChartWrapper title="At-Risk Count by Income Range" fetchState={churnRisk}>
@@ -438,41 +460,41 @@ const DashboardPage: React.FC = () => {
                  data={churnRisk.data.summary_stats.count_by_income}
                  xAxisKey="income_range" 
                  barDataKey="count" 
-                 fillColor="#f87171" // Lighter red
+                 fillColor={chartTheme.purple}
                />
-             ) : <p className="text-sm text-gray-500">Summary data unavailable.</p>}
+             ) : <p className="text-sm text-slate-400">Summary data unavailable.</p>}
           </ChartWrapper>
         </div>
         
         {/* --- At-Risk Customer Table --- */}
         <ChartWrapper title={`At-Risk Customer Details (${churnRisk.data?.at_risk_list?.length || 0})`} fetchState={churnRisk}>
-          <div className="overflow-x-auto max-h-96"> 
-             <table className="min-w-full divide-y divide-gray-200">
-               <thead className="bg-gray-50">
+          <div className="cyber-table table-card max-h-96 overflow-x-auto"> 
+             <table className="min-w-full divide-y divide-cyan-300/10">
+               <thead className="bg-cyan-950/50">
                  <tr>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Household Num</th>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Purchase</th>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loyalty</th>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Income Range</th>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HH Size</th>
-                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Children</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Household Num</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Last Purchase</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Loyalty</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Income Range</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">HH Size</th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wide text-cyan-100">Children</th>
                  </tr>
                </thead>
-               <tbody className="bg-white divide-y divide-gray-200">
+               <tbody className="divide-y divide-cyan-300/10 bg-slate-950/45">
                  {(churnRisk.data?.at_risk_list && churnRisk.data.at_risk_list.length > 0) ? (
                    churnRisk.data.at_risk_list.map((customer) => (
-                     <tr key={customer.Hshd_num}>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{customer.Hshd_num}</td>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.LastPurchaseDate}</td>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.Loyalty_flag}</td>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.IncomeRange}</td>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.HshdSize}</td>
-                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.Children}</td>
+                     <tr key={customer.Hshd_num} className="odd:bg-white/[0.025] hover:bg-cyan-400/10">
+                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-100">{customer.Hshd_num}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{customer.LastPurchaseDate}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{customer.Loyalty_flag}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{customer.IncomeRange}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{customer.HshdSize}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{customer.Children}</td>
                      </tr>
                    ))
                  ) : (
                    <tr>
-                     <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">No customers identified at high risk of churn (based on 8-week inactivity).</td>
+                     <td colSpan={6} className="px-6 py-4 text-center text-sm text-slate-400">No customers identified at high risk of churn (based on 8-week inactivity).</td>
                    </tr>
                  )}
                </tbody>
@@ -481,17 +503,17 @@ const DashboardPage: React.FC = () => {
         </ChartWrapper>
         
         {/* --- Retention Suggestions --- */}
-        <div className="mt-6 p-5 border rounded-lg bg-yellow-50 shadow-sm">
-           <h3 className="text-lg font-semibold mb-3 text-yellow-800">Potential Retention Strategies</h3>
-           <ul className="list-disc list-inside text-sm text-yellow-700 space-y-1">
+        <section className="panel-card dashboard-section">
+           <h2 className="section-title text-amber-200">Potential Retention Strategies</h2>
+           <ul>
              <li>Segment offers based on loyalty status and income range (e.g., exclusive discounts for high-income/low-loyalty, reminders for loyal customers).</li>
              <li>Analyze purchase history of at-risk customers to personalize re-engagement campaigns (e.g., promotions on previously bought categories).</li>
              <li>Consider a targeted survey to understand reasons for disengagement.</li>
              <li>Review product assortment or pricing for commodities frequently purchased by the at-risk groups.</li>
            </ul>
-        </div>
+        </section>
         
-      </div>
+      </section>
     </div>
   );
 };

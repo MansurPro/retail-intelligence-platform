@@ -19,63 +19,52 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <nav className="bg-gradient-to-r from-indigo-600 to-purple-700 shadow-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <span className="flex-shrink-0 flex items-center text-2xl font-bold text-white mr-8">
-                Retail Portal
-              </span>
-              <div className="flex space-x-8">
-                {navLinks.map((link) => (
+    <div className="app-shell">
+      <header className="app-navbar">
+        <div className="nav-inner">
+          <Link className="brand" to="/dashboard">
+            Retail Intelligence Platform
+          </Link>
+          <nav className="nav-links" aria-label="Primary navigation">
+            {navLinks.map((link) => {
+              const isActive = location.pathname.startsWith(link.href);
+              return (
                   <Link
                     key={link.href}
                     to={link.href}
-                    className={`inline-flex items-center pt-1 border-b-2 text-base font-medium rounded-t-md transition-colors duration-150 ease-in-out 
-                       ${location.pathname.startsWith(link.href)
-                        ? 'border-white text-white bg-indigo-700/50'
-                        : 'border-transparent text-indigo-100 hover:border-indigo-200 hover:text-white hover:bg-indigo-500/75'}`}
-                    style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
-                    aria-current={location.pathname.startsWith(link.href) ? 'page' : undefined}
+                    className={`nav-link ${isActive ? 'active' : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
                   >
                     {link.text}
                   </Link>
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center">
+              );
+            })}
+          </nav>
+          <div className="nav-user">
               {isLoading ? (
-                 <span className="text-sm text-indigo-100">Loading user...</span>
+                 <span>Loading user...</span>
               ) : user ? (
                 <>
-                  <span className="text-sm font-medium text-indigo-100 mr-4">Welcome, {user}!</span>
+                  <span>Welcome, {user}</span>
                   <button
                     onClick={handleLogout}
-                    className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-700 focus:ring-white transition-colors duration-150 ease-in-out"
+                    className="logout-button"
                   >
                     Logout
                   </button>
 
                 </>
               ) : (
-                 <Link to="/login" className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50">
+                 <Link to="/login" className="logout-button">
                    Login
                  </Link>
               )}
-            </div>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white/90 backdrop-blur-sm shadow-xl rounded-lg overflow-hidden border border-gray-200">
-            <div className="px-4 py-8 sm:p-10 min-h-[calc(100vh-12rem)]">
-              <Outlet /> 
-            </div>
-          </div>
-        </div>
+      <main>
+        <Outlet /> 
       </main>
     </div>
   );

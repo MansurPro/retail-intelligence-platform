@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartTheme, tooltipStyle } from './chartTheme';
 
 interface SimpleLineChartProps {
   data: unknown[];
@@ -17,9 +18,9 @@ interface SimpleLineChartProps {
   strokeColor?: string;
 }
 
-const SimpleLineChart: React.FC<SimpleLineChartProps> = ({ data, xAxisKey, lineDataKey, strokeColor = "#8884d8" }) => {
+const SimpleLineChart: React.FC<SimpleLineChartProps> = ({ data, xAxisKey, lineDataKey, strokeColor = chartTheme.cyan }) => {
   if (!Array.isArray(data) || data.length === 0) {
-    return <p className="text-sm text-gray-500">No data available for chart.</p>;
+    return <p className="text-sm text-slate-400">No data available for chart.</p>;
   }
 
   return (
@@ -33,12 +34,12 @@ const SimpleLineChart: React.FC<SimpleLineChartProps> = ({ data, xAxisKey, lineD
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisKey} />
-        <YAxis />
-        <Tooltip formatter={(value: number) => value.toFixed(2)} />
-        <Legend />
-        <Line type="monotone" dataKey={lineDataKey} stroke={strokeColor} activeDot={{ r: 8 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+        <XAxis dataKey={xAxisKey} tick={{ fill: chartTheme.axis, fontSize: 12 }} axisLine={{ stroke: chartTheme.grid }} tickLine={{ stroke: chartTheme.grid }} />
+        <YAxis tick={{ fill: chartTheme.axis, fontSize: 12 }} axisLine={{ stroke: chartTheme.grid }} tickLine={{ stroke: chartTheme.grid }} />
+        <Tooltip formatter={(value: number) => value.toFixed(2)} contentStyle={tooltipStyle} />
+        <Legend wrapperStyle={{ paddingTop: 12, color: chartTheme.axis }} />
+        <Line type="monotone" dataKey={lineDataKey} stroke={strokeColor} strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 7 }} />
       </LineChart>
     </ResponsiveContainer>
   );

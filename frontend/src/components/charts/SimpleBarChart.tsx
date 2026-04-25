@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { chartTheme, tooltipStyle } from './chartTheme';
 
 interface SimpleBarChartProps {
   data: unknown[]; // Use unknown[] instead of any[]
@@ -17,10 +18,10 @@ interface SimpleBarChartProps {
   fillColor?: string;
 }
 
-const SimpleBarChart: React.FC<SimpleBarChartProps> = ({ data, xAxisKey, barDataKey, fillColor = "#8884d8" }) => {
+const SimpleBarChart: React.FC<SimpleBarChartProps> = ({ data, xAxisKey, barDataKey, fillColor = chartTheme.cyan }) => {
   // Check if data is an array before proceeding
   if (!Array.isArray(data) || data.length === 0) { 
-    return <p className="text-sm text-gray-500">No data available for chart.</p>;
+    return <p className="text-sm text-slate-400">No data available for chart.</p>;
   }
 
   // Recharts can often handle data with appropriate keys even if type is unknown[]
@@ -36,12 +37,12 @@ const SimpleBarChart: React.FC<SimpleBarChartProps> = ({ data, xAxisKey, barData
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisKey} />
-        <YAxis />
-        <Tooltip formatter={(value: number) => value.toFixed(2)} />
-        <Legend />
-        <Bar dataKey={barDataKey} fill={fillColor} />
+        <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid} vertical={false} />
+        <XAxis dataKey={xAxisKey} tick={{ fill: chartTheme.axis, fontSize: 12 }} axisLine={{ stroke: chartTheme.grid }} tickLine={{ stroke: chartTheme.grid }} />
+        <YAxis tick={{ fill: chartTheme.axis, fontSize: 12 }} axisLine={{ stroke: chartTheme.grid }} tickLine={{ stroke: chartTheme.grid }} />
+        <Tooltip formatter={(value: number) => value.toFixed(2)} contentStyle={tooltipStyle} cursor={{ fill: 'rgba(34, 211, 238, 0.08)' }} />
+        <Legend wrapperStyle={{ paddingTop: 12, color: chartTheme.axis }} />
+        <Bar dataKey={barDataKey} fill={fillColor} radius={[7, 7, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

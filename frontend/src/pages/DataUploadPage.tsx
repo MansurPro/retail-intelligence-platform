@@ -163,9 +163,9 @@ const DataUploadPage: React.FC = () => {
 
     if (currentStep === 'done') {
       return (
-        <div className="p-4 text-center bg-green-50 border border-green-200 rounded-lg">
-          <p className="font-semibold text-green-700">All steps processed.</p>
-          <p className="text-sm text-gray-600">Check the status messages above for details. Dashboard data may still be updating in the background.</p>
+        <div className="upload-step text-center">
+          <p className="font-semibold text-green-200">All steps processed.</p>
+          <p className="text-sm text-slate-300">Check the status messages above for details. Dashboard data may still be updating in the background.</p>
         </div>
       );
     }
@@ -174,21 +174,21 @@ const DataUploadPage: React.FC = () => {
     const state = fileStates[currentStep];
     const isUploadingCurrent = state.status === 'uploading' || state.status === 'polling';
 
-    let statusColor = 'text-gray-600';
-    if (state.status === 'success' || state.status === 'polling') statusColor = 'text-green-600'; // Treat polling as temp success
-    if (state.status === 'error') statusColor = 'text-red-600';
-    if (state.status === 'uploading') statusColor = 'text-blue-600';
+    let statusColor = 'text-slate-300';
+    if (state.status === 'success' || state.status === 'polling') statusColor = 'text-green-300'; // Treat polling as temp success
+    if (state.status === 'error') statusColor = 'text-red-300';
+    if (state.status === 'uploading') statusColor = 'text-cyan-300';
     
     return (
-      <div className="mb-6 p-4 border border-indigo-200 rounded-lg bg-white shadow-sm">
-        <label className="block text-lg font-semibold text-indigo-700 mb-3">
+      <div className="upload-step">
+        <label className="upload-step-title block">
           {config.label}
         </label>
         <input 
           type="file" 
           accept=".csv" 
           onChange={handleFileChange}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 disabled:opacity-50 mb-3"
+          className="file-input"
           disabled={isUploadingCurrent || isDashboardUpdating}
           key={currentStep} // Force re-render on step change to clear file input visually
         />
@@ -199,11 +199,11 @@ const DataUploadPage: React.FC = () => {
             {state.message}
           </p>
         )}
-        <div className="flex space-x-3">
+        <div className="upload-actions">
              <button 
                  type="button" // Prevent form submission
                  onClick={uploadCurrentFile} 
-                 className="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                 className="primary-button"
                  disabled={!state.file || isUploadingCurrent || isDashboardUpdating}
              >
                  {isUploadingCurrent ? 'Processing...' : `Upload ${currentStep.charAt(0).toUpperCase() + currentStep.slice(1)}`}
@@ -212,7 +212,7 @@ const DataUploadPage: React.FC = () => {
             <button 
                 type="button" 
                 onClick={advanceStep} // Simply advances to the next step
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="skip-button"
                 disabled={isUploadingCurrent || isDashboardUpdating} // Disable during upload/polling
             >
                 Skip
@@ -223,38 +223,46 @@ const DataUploadPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-6 relative">
+    <div className="page-container relative">
       
       {/* Dashboard Updating Indicator Overlay */} 
       {isDashboardUpdating && (
-          <div className="absolute inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 rounded-lg">
-              <div className="bg-white p-6 rounded-lg shadow-xl text-center">
-                  <p className="text-lg font-semibold text-indigo-700 animate-pulse">Updating Dashboard Data...</p>
-                  <p className="text-sm text-gray-600 mt-2">Please wait, this might take a minute.</p>
+          <div className="absolute inset-0 bg-slate-950/75 flex items-center justify-center z-50 rounded-2xl backdrop-blur-sm">
+              <div className="panel-card rounded-2xl p-6 text-center">
+                  <p className="text-lg font-semibold text-cyan-200 animate-pulse">Updating Dashboard Data...</p>
+                  <p className="text-sm text-slate-300 mt-2">Please wait, this might take a minute.</p>
               </div>
           </div>
       )}
 
-      <h2 className="text-3xl font-bold mb-6 text-indigo-800 border-b pb-2 border-indigo-200">Upload Datasets</h2>
-      <p className="text-sm text-gray-600 mb-6">
-        Upload datasets sequentially. Uploading will 
-        <strong className="text-orange-600">append</strong> the new data to the existing database tables.
-      </p>
+      <header className="page-header">
+        <h2 className="page-title">Data Upload & Refresh</h2>
+        <p className="page-subtitle">
+          Upload updated household, transaction, and product CSV files to refresh the analytics workspace.
+        </p>
+      </header>
 
-      {/* Render current step */} 
-      {renderCurrentStepInput()}
+      <div className="panel-card upload-card">
+        <p className="mb-6 text-sm text-slate-400">
+          Upload datasets sequentially. Uploading will 
+          <strong className="text-amber-300"> append</strong> the new data to the existing database tables.
+        </p>
 
-       {/* Only show reset button if process has started */} 
-       {(currentStep !== 'households' || fileStates.households.file) && (
-         <button 
-             type="button" 
-             onClick={handleReset}
-             className="mt-6 w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-             disabled={isDashboardUpdating || fileStates[currentStep]?.status === 'uploading' || fileStates[currentStep]?.status === 'polling'}
-         >
-             Reset Upload Process
-         </button>
-        )}
+        {/* Render current step */} 
+        {renderCurrentStepInput()}
+
+         {/* Only show reset button if process has started */} 
+         {(currentStep !== 'households' || fileStates.households.file) && (
+           <button 
+               type="button" 
+               onClick={handleReset}
+               className="skip-button mt-6 w-full"
+               disabled={isDashboardUpdating || fileStates[currentStep]?.status === 'uploading' || fileStates[currentStep]?.status === 'polling'}
+           >
+               Reset Upload Process
+           </button>
+          )}
+      </div>
 
     </div>
   );

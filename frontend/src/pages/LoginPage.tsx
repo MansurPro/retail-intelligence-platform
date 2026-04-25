@@ -88,14 +88,20 @@ const LoginPage: React.FC = () => {
 
 
   return (
-    <div className="flex items-center justify-center ">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
-        <h2 className="text-3xl font-bold text-center text-indigo-700">
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2 className="auth-title">
           {isRegistering ? 'Create Account' : 'Welcome Back'}
         </h2>
-        <form className="space-y-6" onSubmit={isRegistering ? handleRegister : handleLogin}>
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+        <p className="auth-subtitle">
+          {isRegistering
+            ? 'Create an account to start exploring retail intelligence insights.'
+            : 'Sign in to explore customer spending, loyalty behavior, churn risk, and basket insights.'}
+        </p>
+
+        <form onSubmit={isRegistering ? handleRegister : handleLogin}>
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
               Username
             </label>
             <input
@@ -103,15 +109,15 @@ const LoginPage: React.FC = () => {
               name="username"
               type="text"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="form-input"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
           {isRegistering && (
-             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+             <div className="form-group">
+              <label htmlFor="email" className="form-label">
                 Email address
               </label>
               <input
@@ -119,15 +125,15 @@ const LoginPage: React.FC = () => {
                 name="email"
                 type="email"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="form-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           )}
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
               Password
             </label>
             <input
@@ -135,39 +141,37 @@ const LoginPage: React.FC = () => {
               name="password"
               type="password"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="form-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
            {error && (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="rounded-xl border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-200">{error}</p>
            )}
 
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out"
+              className="primary-button"
             >
               {loading ? 'Processing...' : (isRegistering ? 'Register' : 'Login')}
             </button>
           </div>
         </form>
 
-        <div className="text-sm text-center">
-          <button
-            type="button"
-            onClick={() => {
-                setIsRegistering(!isRegistering);
-                setError(null); // Clear errors on switch
-            }}
-            className="font-medium text-indigo-600 hover:text-indigo-500"
-          >
-            {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => {
+              setIsRegistering(!isRegistering);
+              setError(null); // Clear errors on switch
+          }}
+          className="secondary-link-button"
+        >
+          {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
+        </button>
       </div>
     </div>
   );
