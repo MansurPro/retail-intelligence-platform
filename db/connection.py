@@ -26,11 +26,15 @@ def get_engine():
         f"PWD={password};"
         f"Encrypt=yes;"
         f"TrustServerCertificate=yes;"
-        f"Connection Timeout=60;"
+        f"Connection Timeout=120;"
+        f"Login Timeout=120;"
     )
 
     return create_engine(
         f"mssql+pyodbc:///?odbc_connect={params}",
         fast_executemany=True,
         pool_pre_ping=True,
+        pool_recycle=1800,
+        pool_timeout=120,
+        connect_args={"timeout": 120},
     )
