@@ -8,7 +8,7 @@ CORS_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
-    "https://cloud-comp-retail.vercel.app",
+    "https://retail-intelligence-platform.netlify.app",
 ]
 
 logging.basicConfig(level=logging.INFO)
