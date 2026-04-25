@@ -21,7 +21,7 @@ const SearchPage: React.FC = () => {
   const [searched, setSearched] = useState(false); // Track if a search has been performed
 
   const { token } = useAuth(); // Get the auth token
-  const API_BASE_URL = 'https://cloud-comp-retail.vercel.app';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();

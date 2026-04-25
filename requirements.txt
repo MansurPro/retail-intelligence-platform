@@ -9,7 +9,7 @@ pyodbc
 pandas
 
 # --- Machine Learning & Analysis ---
-scikit-learn
+scikit-learn==1.5.1
 joblib
 mlxtend # For Apriori
 
@@ -22,3 +22,6 @@ python-dotenv # Good practice for managing secrets like DB password
 
 # --- Utilities ---
 urllib3 # Often a hidden dependency 
+
+# --- For making API calls to external services (if needed) ---
+requests
