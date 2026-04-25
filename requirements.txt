@@ -2,6 +2,7 @@
 fastapi
 uvicorn[standard]
 python-multipart # Needed for file uploads
+gunicorn
 
 # --- Database & Data Handling ---
 sqlalchemy
