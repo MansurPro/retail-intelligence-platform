@@ -51,7 +51,7 @@ https://retail-api-group-54-hxgyadaravgjb2e9.northcentralus-01.azurewebsites.net
 ### Frontend
 
 ```text
-Add your Azure Static Web Apps URL here after frontend deployment.
+https://retail-intelligence-platform.netlify.app
 ```
 
 ---
