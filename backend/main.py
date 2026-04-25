@@ -1,24 +1,18 @@
 from contextlib import asynccontextmanager
-import asyncio
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import CORS_ORIGINS, logger
 from .routers import auth, dashboard, prediction, search, upload
-from .services.dashboard_service import scheduler, update_dashboard_data
+from .services.dashboard_service import scheduler
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("App starting...")
-
     scheduler.start()
-
-    # Do not block Azure startup with heavy dashboard calculations.
-    # This lets /health respond immediately while dashboard cache builds in background.
-    asyncio.create_task(update_dashboard_data())
-
+    # await update_dashboard_data()
     logger.info("App started.")
 
     yield
