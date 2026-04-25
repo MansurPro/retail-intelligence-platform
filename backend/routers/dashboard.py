@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter
 
 from ..services.dashboard_service import (
@@ -17,8 +19,8 @@ async def get_dashboard_update_status():
 
 @router.post("/refresh-dashboard")
 async def refresh_dashboard():
-    await update_dashboard_data()
-    return {"message": "Dashboard data refreshed."}
+    asyncio.create_task(update_dashboard_data())
+    return {"message": "Dashboard refresh started."}
 
 
 @router.get("/top-spenders")
@@ -64,4 +66,3 @@ async def churn_risk():
 @router.get("/association-rules")
 async def association_rules_endpoint():
     return get_cached_dashboard_data("association-rules")
-

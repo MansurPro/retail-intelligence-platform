@@ -3,6 +3,10 @@ import requests
 
 
 BASE_URL = "http://localhost:8000"
+# BASE_URL = "https://retail-api-group-54-hxgyadaravgjb2e9.northcentralus-01.azurewebsites.net"
+
+RUN_REFRESH = False
+
 
 ENDPOINTS = [
     ("GET", "/health"),
@@ -85,15 +89,18 @@ def main():
     passed = 0
     failed = 0
 
-    # Trigger dashboard refresh first
-    print("=" * 80)
-    print("Refreshing dashboard cache...")
-    try:
-        refresh = requests.post(f"{BASE_URL}/refresh-dashboard", timeout=180)
-        print(f"Refresh status: {refresh.status_code}")
-        print(refresh.text[:1000])
-    except Exception as e:
-        print(f"Refresh failed: {e}")
+    if RUN_REFRESH:
+        print("=" * 80)
+        print("Refreshing dashboard cache...")
+        try:
+            refresh = requests.post(f"{BASE_URL}/refresh-dashboard", timeout=180)
+            print(f"Refresh status: {refresh.status_code}")
+            print(refresh.text[:1000])
+        except Exception as e:
+            print(f"Refresh failed: {e}")
+    else:
+        print("=" * 80)
+        print("Skipping dashboard refresh. Set RUN_REFRESH = True for manual refresh tests.")
 
     for method, path in ENDPOINTS:
         ok = test_endpoint(method, path)

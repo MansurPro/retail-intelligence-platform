@@ -9,6 +9,7 @@ from sqlalchemy import text
 
 from ..config import logger
 from ..database import get_sqlalchemy_connection
+from .cache_service import get_cache, set_cache
 
 
 precomputed_data = {}
@@ -254,7 +255,7 @@ def _fetch_association_rules(conn, min_support=0.01, min_confidence=0.1, top_n=1
         return []
 
 
-async def update_dashboard_data():
+def _update_dashboard_data_sync():
     global dashboard_update_in_progress
     global precomputed_data
 
@@ -289,10 +290,15 @@ async def update_dashboard_data():
         for key, fetch_func in endpoints_to_update.items():
             try:
                 temp_data[key] = fetch_func(conn)
+                set_cache(key, temp_data[key])
                 logger.info(f"Updated dashboard data: {key}")
             except Exception as e:
                 logger.error(f"Failed to update {key}: {e}")
-                temp_data[key] = precomputed_data.get(key, {"error": str(e)})
+                cached_data = precomputed_data.get(key)
+                if cached_data is None:
+                    cached = get_cache(key)
+                    cached_data = cached["data"] if cached is not None else None
+                temp_data[key] = cached_data if cached_data is not None else {"error": str(e)}
 
         precomputed_data = temp_data
 
@@ -301,6 +307,10 @@ async def update_dashboard_data():
             conn.close()
         dashboard_update_in_progress = False
         logger.info("Dashboard update finished.")
+
+
+async def update_dashboard_data():
+    await asyncio.to_thread(_update_dashboard_data_sync)
 
 
 def scheduled_dashboard_update():
@@ -315,7 +325,17 @@ def get_cached_dashboard_data(key: str):
     data = precomputed_data.get(key)
 
     if data is None:
-        raise HTTPException(status_code=503, detail="Data is still calculating. Try again soon.")
+        cached = get_cache(key)
+        if cached is not None:
+            data = cached["data"]
+            precomputed_data[key] = data
+            logger.info(f"Loaded dashboard data from SQL cache: {key}")
+
+    if data is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Dashboard cache is warming up. Please refresh in a minute.",
+        )
 
     if isinstance(data, dict) and "error" in data:
         raise HTTPException(status_code=500, detail=f"Could not get data: {data['error']}")
@@ -330,4 +350,3 @@ scheduler.add_job(
     id="dashboard_update_job",
     replace_existing=True,
 )
-

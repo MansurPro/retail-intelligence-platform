@@ -42,3 +42,10 @@ CREATE TABLE users (
     email VARCHAR(150) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+
+IF OBJECT_ID('dashboard_cache', 'U') IS NULL
+CREATE TABLE dashboard_cache (
+    cache_key VARCHAR(100) PRIMARY KEY,
+    data NVARCHAR(MAX) NOT NULL,
+    updated_at DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
