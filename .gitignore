@@ -111,3 +111,7 @@ docker-compose.override.yml
 # OS / system files
 # =========================
 Thumbs.db
+
+data/*.csv
+data/*.zip
+data/*.pdf
