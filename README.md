@@ -62,23 +62,6 @@ This section shows the main pages and functionality of the Retail Intelligence P
 
 ### 1. Login / Register Page
 
-Users can create an account with username, email, and password, then log in to access the retail analytics dashboard.
-
-```markdown
-![Login and Register Page](docs/screenshots/login-register.png)
-
-
-Add this section after **Live Deployment** or after **Key Features** in your root `README.md`.
-
-````markdown
----
-
-## 🖼️ Application Screenshots
-
-This section shows the main pages and functionality of the Retail Intelligence Platform.
-
-### 1. Login / Register Page
-
 ![Login and Register Page](docs/screenshots/login-register.png)
 
 ---
