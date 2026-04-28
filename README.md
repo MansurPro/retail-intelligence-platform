@@ -56,6 +56,35 @@ https://retail-intelligence-platform.netlify.app
 
 ---
 
+## 🖼️ Application Screenshots
+
+This section shows the main pages and functionality of the Retail Intelligence Platform.
+
+### 1. Login / Register Page
+
+![Login and Register Page](docs/screenshots/login-register.png)
+
+---
+
+### 2. Household Search Page
+
+![Household Search Page](docs/screenshots/household-search.png)
+
+---
+
+### 4. Retail Analytics Dashboard
+
+![Retail Dashboard Overview](docs/screenshots/dashboard-overview.png)
+
+---
+
+### 5. Top Spenders and Loyalty Trends
+
+![Top Spenders and Loyalty Trends](docs/screenshots/top-spenders-loyalty-trends.png)
+
+---
+
+
 ## 🧠 Key Features
 
 ### 1. Authentication
